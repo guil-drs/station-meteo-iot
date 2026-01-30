@@ -60,7 +60,7 @@ Vous devriez voir la page avec les mesures simulées.
 
 ## 6️⃣ Modifier le code
 
-Éditez les fichiers dans VS Code, par exemple :
+Si vous voulez éditer les fichiers dans VS Code, par exemple :
 
 - meteo/views.py pour la logique des mesures simulées
 - meteo/templates/meteo/demo.html pour le frontend
