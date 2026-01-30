@@ -39,9 +39,7 @@ source venv/bin/activate
 
 ## 4️⃣ Installer les dépendances
 
-pip install django paho-mqtt
-
-Si un fichier requirements.txt est présent, vous pouvez aussi faire :
+Faites : 
 
 pip install -r requirements.txt
 
