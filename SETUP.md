@@ -56,6 +56,7 @@ Conseil : toujours activer le venv avant de faire python manage.py runserver ou 
 Ouvrez un terminal et tapez :
 
 git clone https://github.com/guil-drs/station-meteo-iot.git
+puis
 cd station-meteo-iot
 
 ---
@@ -80,6 +81,11 @@ pip install -r requirements.txt
 > Le fichier requirements.txt contient toutes les dépendances nécessaires :
 Django==6.0.1
 paho-mqtt==1.6.1
+
+Si ca ne marche pas tapez juste dans le terminal  :
+pip install Django==6.0.1
+puis
+pip install paho-mqtt==1.6.1
 
 ---
 
