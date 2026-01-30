@@ -35,38 +35,6 @@ Vous devriez voir un numéro de version, par exemple git version 2.41.0.
 
 ---
 
-### c) Installer VS Code (ou un autre éditeur)
-
-- Téléchargez VS Code : https://code.visualstudio.com/
-- Installez-le normalement.
-- Facultatif mais conseillé : installez l’extension Python pour VS Code.
-
----
-
-### d) Installer Mosquitto (optionnel pour MQTT)
-
-Si vous voulez tester la partie IoT / MQTT :
-
-1. Téléchargez Mosquitto pour votre système : https://mosquitto.org/download/
-2. Installez-le et assurez-vous que la commande mosquitto fonctionne dans le terminal :
-mosquitto -h
-Vous devriez voir l’aide de Mosquitto s’afficher.
-
----
-
-### e) Créer le fichier .gitignore pour le projet
-
-Pour éviter de pousser le dossier venv ou la base de données SQLite sur GitHub, assurez-vous d’avoir un fichier .gitignore à la racine du projet avec au moins ces lignes :
-
-venv/
-db.sqlite3
-__pycache__/
-*.pyc
-
-Cela empêche Git de suivre ces fichiers et dossiers inutiles.
-
----
-
 ### f) Le rôle du venv et comment l’utiliser
 
 - À chaque fois que vous ouvrez le projet pour travailler, vous devez activer le venv pour que Python utilise les bonnes bibliothèques.  
