@@ -72,10 +72,12 @@ Sauvegardez et rechargez la page dans le navigateur pour voir les changements.
 
 ## 7️⃣ Mettre à jour GitHub
 
-Après avoir modifié des fichiers :
+Après avoir modifié des fichiers, copier/coller dans le terminal ces commandes : 
 
 git add .
+puis
 git commit -m "Description courte des modifications"
+puis
 git push
 
 Vos coéquipiers peuvent récupérer vos changements avec :
