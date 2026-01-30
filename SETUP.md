@@ -7,6 +7,12 @@ Ce guide explique comment configurer le projet Django sur votre PC pour pouvoir 
 ## 1️⃣ Prérequis
 
 Avant de commencer, il faut s'assurer que votre ordinateur a tout ce qu’il faut pour faire tourner Django et le projet. Voici les étapes détaillées :
+Il faut que vous ayez sur votre ordi : 
+Python 3.10 ou +
+VS Code ou un éditeur de code
+Git
+Mosquitto
+Si c'est déjà fait vous pouvez déjà aller à l'étape e)
 
 ### a) Installer Python 3.10 ou plus récent
 
