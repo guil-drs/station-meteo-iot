@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Station Météo Demo</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'meteo/styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Station Météo - Données Simulées</h1>
+
+    <div class="chart-container">
+        <canvas id="temperatureChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="humiditeChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="pressionChart"></canvas>
+    </div>
+
+    <script>
+    const mesures = JSON.parse('{{ mesures_json|safe }}');
+
+    const labels = mesures.map(m => m.date).reverse();
+    const tempData = mesures.map(m => m.temperature).reverse();
+    const humiditeData = mesures.map(m => m.humidite).reverse();
+    const pressionData = mesures.map(m => m.pression).reverse();
+
+    // Graphique température
+    new Chart(document.getElementById('temperatureChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Température (°C)',
+                data: tempData,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255,0,0,0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Graphique humidité
+    new Chart(document.getElementById('humiditeChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Humidité (%)',
+                data: humiditeData,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0,0,255,0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Graphique pression
+    new Chart(document.getElementById('pressionChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Pression (hPa)',
+                data: pressionData,
+                borderColor: 'green',
+                backgroundColor: 'rgba(0,255,0,0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { responsive: true }
+    });
+	</script>
+

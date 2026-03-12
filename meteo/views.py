@@ -15,7 +15,7 @@ def page_demo(request):
         })
     # Convertir en JSON pour JS
     mesures_json = json.dumps(mesures)
-    return render(request, "meteo/demo.html", {"mesures_json": mesures_json})
+    return render(request, "meteo/demo-Copie.html", {"mesures_json": mesures_json})
 
 
 
