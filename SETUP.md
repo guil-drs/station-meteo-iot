@@ -6,12 +6,48 @@ Ce guide explique comment configurer le projet Django sur votre PC pour pouvoir 
 
 ## 1️⃣ Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé :
+Avant de commencer, il faut s'assurer que votre ordinateur a tout ce qu’il faut pour faire tourner Django et le projet. Voici les étapes détaillées :
+Il faut que vous ayez sur votre ordi : 
+Python 3.10 ou +
+VS Code ou un éditeur de code
+Git
+Mosquitto
+Si c'est déjà fait vous pouvez déjà aller à l'étape e)
 
-- Python 3.10+
-- Git
-- VS Code ou un autre éditeur de code
-- Mosquitto (optionnel pour tester la partie MQTT)
+### a) Installer Python 3.10 ou plus récent
+
+1. Allez sur le site officiel : https://www.python.org/downloads/
+2. Téléchargez et installez la version recommandée pour votre système (Windows, macOS ou Linux).
+3. Important sur Windows : cochez la case "Add Python to PATH" pendant l’installation.
+4. Pour vérifier que Python est bien installé, ouvrez un terminal et tapez :
+python --version
+Vous devriez voir un numéro de version comme Python 3.14.0.
+
+---
+
+### b) Installer Git
+
+1. Téléchargez Git : https://git-scm.com/downloads
+2. Installez-le avec les options par défaut.
+3. Vérifiez l’installation :
+git --version
+Vous devriez voir un numéro de version, par exemple git version 2.41.0.
+
+---
+
+### f) Le rôle du venv et comment l’utiliser
+
+- À chaque fois que vous ouvrez le projet pour travailler, vous devez activer le venv pour que Python utilise les bonnes bibliothèques.  
+- Sur Windows :
+venv\Scripts\activate
+- Sur macOS / Linux :
+source venv/bin/activate
+- Quand le venv est activé, le nom (venv) apparaît dans le terminal.  
+- Une fois activé, vous pouvez lancer le serveur Django et installer des dépendances.
+- Pour quitter le venv, tapez :
+deactivate
+
+Conseil : toujours activer le venv avant de faire python manage.py runserver ou d’installer de nouvelles bibliothèques.
 
 ---
 
@@ -20,6 +56,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 Ouvrez un terminal et tapez :
 
 git clone https://github.com/guil-drs/station-meteo-iot.git
+puis
 cd station-meteo-iot
 
 ---
@@ -39,11 +76,16 @@ source venv/bin/activate
 
 ## 4️⃣ Installer les dépendances
 
-pip install django paho-mqtt
-
-Si un fichier requirements.txt est présent, vous pouvez aussi faire :
-
 pip install -r requirements.txt
+
+> Le fichier requirements.txt contient toutes les dépendances nécessaires :
+Django==6.0.1
+paho-mqtt==1.6.1
+
+Si ca ne marche pas tapez juste dans le terminal  :
+pip install Django==6.0.1
+puis
+pip install paho-mqtt==1.6.1
 
 ---
 
@@ -88,11 +130,10 @@ git pull
 
 ## 8️⃣ Notes importantes
 
-- Ne pas inclure le dossier venv dans GitHub
+- Ne pas inclure le dossier venv dans GitHub (il est déjà dans .gitignore)
 - Ne pas modifier db.sqlite3 si vous voulez rester synchronisés
 - Mosquitto est seulement nécessaire si vous voulez tester la partie IoT / MQTT
 - Pour toute nouvelle dépendance Python, ajoutez-la dans requirements.txt avec :
-
 pip freeze > requirements.txt
 
 ---
