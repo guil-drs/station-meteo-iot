@@ -11,26 +11,25 @@
 <body>
     <h1>Station Météo - Données Simulées</h1>
 
-    <div class="chart-container">
-        <canvas id="temperatureChart"></canvas>
+    <div class="Graphiques">
+        <canvas id="GraphiqueTempérature"></canvas>
     </div>
-    <div class="chart-container">
-        <canvas id="humiditeChart"></canvas>
+    <div class="Graphiques">
+        <canvas id="GraphiqueHumidité"></canvas>
     </div>
-    <div class="chart-container">
-        <canvas id="pressionChart"></canvas>
+    <div class="Graphiques">
+        <canvas id="GraphiquePression"></canvas>
     </div>
 
     <script>
     const mesures = JSON.parse('{{ mesures_json|safe }}');
-
-    const labels = mesures.map(m => m.date).reverse();
-    const tempData = mesures.map(m => m.temperature).reverse();
-    const humiditeData = mesures.map(m => m.humidite).reverse();
-    const pressionData = mesures.map(m => m.pression).reverse();
+    const labels = mesures.map(m => m.timestamp);
+    const tempData = mesures.map(m => m.temperature);
+    const humiditeData = mesures.map(m => m.humidite);
+    const pressionData = mesures.map(m => m.pression);
 
     // Graphique température
-    new Chart(document.getElementById('temperatureChart'), {
+    new Chart(document.getElementById('GraphiqueTempérature'), {
         type: 'line',
         data: {
             labels: labels,
@@ -47,7 +46,7 @@
     });
 
     // Graphique humidité
-    new Chart(document.getElementById('humiditeChart'), {
+    new Chart(document.getElementById('GraphiqueHumidité'), {
         type: 'line',
         data: {
             labels: labels,
@@ -64,7 +63,7 @@
     });
 
     // Graphique pression
-    new Chart(document.getElementById('pressionChart'), {
+    new Chart(document.getElementById('GraphiquePression'), {
         type: 'line',
         data: {
             labels: labels,

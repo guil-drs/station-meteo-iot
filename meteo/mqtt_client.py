@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt #librairie mqtt
 import json # pour lire les fichiers json envoyés par l'esp32
 from django.conf import settings
-# from .models import DonneeMeteo # pour stocker les données par la suite
+from .models import DonneeMeteo # pour stocker les données recus de l'esp32
 
 
 def on_connect(client, userdata, flags, rc): #Connexion au broker. client : client MQTT; userdata: données optionnelles; flags: infos protocole et rc: return code
@@ -18,11 +18,13 @@ def on_message(client, userdata, msg): #Reception d'un message
         # On récupère les données météo envoyées par l'esp
         temperature = data.get("temperature")
         humidite = data.get("humidite")
-        """DonneeMeteo.objects.create( # On les stocks
+        pression = data.get("pression")
+        DonneeMeteo.objects.create( # On les stockes dans le model DoneeMeteo, donc dans la base de données
             temperature=temperature,
-            humidite=humidite
+            humidite=humidite,
+            pression=pression
         )
-        print("Données sauvegardées")""" #pour sauvergarder les données dans la base de donnée
+        print("Données sauvegardées") 
     except Exception as e:
         print("Erreur traitement message :", e)
 

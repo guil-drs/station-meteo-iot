@@ -12,3 +12,4 @@ class MeteoConfig(AppConfig): #configuration de l'app meteo
 
         from .mqtt_client import start_mqtt
         start_mqtt() #lance le client mqtt
+        
