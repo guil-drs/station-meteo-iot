@@ -11,20 +11,23 @@ def on_connect(client, userdata, flags, rc): #Connexion au broker. client : clie
     else:
         print("Erreur de connexion :", rc)
 
-def on_message(client, userdata, msg): #Reception d'un message
+def on_message(client, userdata, msg):
     print(f"Message reçu sur {msg.topic}")
     try:
-        data = json.loads(msg.payload.decode()) #on charge et décode le contenu du message
-        # On récupère les données météo envoyées par l'esp
+        data = json.loads(msg.payload.decode())
+
         temperature = data.get("temperature")
-        humidite = data.get("humidite")
         pression = data.get("pression")
-        DonneeMeteo.objects.create( # On les stockes dans le model DoneeMeteo, donc dans la base de données
+        altitude = data.get("altitude")
+
+        DonneeMeteo.objects.create(
             temperature=temperature,
-            humidite=humidite,
-            pression=pression
+            pression=pression,
+            altitude=altitude
         )
-        print("Données sauvegardées") 
+
+        print("Données sauvegardées")
+
     except Exception as e:
         print("Erreur traitement message :", e)
 
