@@ -1,23 +1,100 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
-    margin: 40px;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 16px;
 }
 
 h1 {
     text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Cartes résumé */
+.kpi-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 20px;
+    text-align: center;
+    flex: 1;
+    max-width: 200px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.kpi-card .label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kpi-card .value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 4px 0 2px;
+}
+
+.kpi-card .minmax {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.kpi-temp .value { color: red; }
+.kpi-pression .value { color: blue; }
+.kpi-altitude .value { color: green; }
+
+/* Graphiques */
+.graphiques-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
 .Graphiques {
-    width: 600px;
-    height : 300px;
-    margin: 40px auto;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    min-width: 0;
 }
 
-#GraphiqueTempérature {
-    left : 0;
+.Graphiques:last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin: 0 auto;
+    width: 100%;
 }
 
-#GraphiquePression{
-    right: 0;
-}
+/* Mobile */
+@media (max-width: 600px) {
+    .kpi-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
 
+    .kpi-card {
+        max-width: 100%;
+    }
+
+    .graphiques-row {
+        grid-template-columns: 1fr;
+    }
+
+    .Graphiques:last-child {
+        max-width: 100%;
+        grid-column: 1;
+    }
+}

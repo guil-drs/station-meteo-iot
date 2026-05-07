@@ -8,3 +8,4 @@ class DonneeMeteo(models.Model):
 
     def __str__(self):
         return f"{self.timestamp} - Température:{self.temperature}°C Humidité:{self.humidite}% Pression:{self.humidite}hPa"
+    

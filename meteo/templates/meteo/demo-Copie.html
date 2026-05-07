@@ -5,429 +5,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Station Météo IoT</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Station Météo</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'meteo/styles.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg: #0a0c0f;
-            --panel: #111418;
-            --border: #1e2530;
-            --border-bright: #2e3d52;
-            --temp: #ff5e3a;
-            --pression: #3ab8ff;
-            --altitude: #2aff9b;
-            --text: #c8d6e8;
-            --muted: #4a5a70;
-            --glow-temp: rgba(255,94,58,0.15);
-            --glow-pression: rgba(58,184,255,0.15);
-            --glow-altitude: rgba(42,255,155,0.15);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            min-height: 100vh;
-            padding: 32px;
-            background-image:
-                radial-gradient(ellipse at 20% 0%, rgba(58,184,255,0.04) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 100%, rgba(255,94,58,0.04) 0%, transparent 60%);
-        }
-
-        /* HEADER */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: var(--altitude);
-            box-shadow: 0 0 12px var(--altitude);
-            animation: pulse 2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--altitude); }
-            50% { opacity: 0.4; box-shadow: 0 0 4px var(--altitude); }
-        }
-
-        h1 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
-            color: #fff;
-        }
-
-        h1 span { color: var(--altitude); }
-
-        .header-meta {
-            font-size: 0.7rem;
-            color: var(--muted);
-            text-align: right;
-            line-height: 1.6;
-        }
-
-        /* KPI CARDS */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .kpi-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px 28px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .kpi-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .kpi-card:hover { border-color: var(--border-bright); }
-        .kpi-card:hover::after { opacity: 1; }
-
-        .kpi-card.temp::before { background: var(--temp); box-shadow: 0 0 12px var(--temp); }
-        .kpi-card.temp::after { background: var(--glow-temp); }
-        .kpi-card.pression::before { background: var(--pression); box-shadow: 0 0 12px var(--pression); }
-        .kpi-card.pression::after { background: var(--glow-pression); }
-        .kpi-card.altitude::before { background: var(--altitude); box-shadow: 0 0 12px var(--altitude); }
-        .kpi-card.altitude::after { background: var(--glow-altitude); }
-
-        .kpi-label {
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-
-        .kpi-value {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 2.6rem;
-            line-height: 1;
-            letter-spacing: -0.03em;
-        }
-
-        .kpi-card.temp .kpi-value { color: var(--temp); }
-        .kpi-card.pression .kpi-value { color: var(--pression); }
-        .kpi-card.altitude .kpi-value { color: var(--altitude); }
-
-        .kpi-unit {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.9rem;
-            font-weight: 400;
-            opacity: 0.6;
-            margin-left: 4px;
-        }
-
-        .kpi-sub {
-            font-size: 0.65rem;
-            color: var(--muted);
-            margin-top: 10px;
-            display: flex;
-            gap: 16px;
-        }
-
-        .kpi-icon {
-            font-size: 2.2rem;
-            position: absolute;
-            bottom: 16px;
-            right: 20px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        /* CHARTS */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .chart-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            transition: border-color 0.3s;
-        }
-
-        .chart-card:hover { border-color: var(--border-bright); }
-        .chart-card.wide { grid-column: 1 / -1; }
-
-        .chart-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .chart-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .chart-badge {
-            font-size: 0.6rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
-
-        canvas { max-height: 200px; }
-        .chart-card.wide canvas { max-height: 175px; }
-    </style>
 </head>
 
 <body>
+    <h1>Station Météo - Dashboard</h1>
 
-    <header>
-        <div class="header-left">
-            <div class="logo-dot"></div>
-            <div>
-                <h1>Station <span>Météo</span></h1>
-                <div style="font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.08em;">IOT DASHBOARD · TEMPS RÉEL</div>
-            </div>
+    <!-- Résumé des dernières valeurs -->
+    <div class="kpi-row">
+        <div class="kpi-card kpi-temp">
+            <div class="label">Température</div>
+            <div class="value" id="kpi-temp">—</div>
+            <div class="minmax" id="kpi-temp-mm"></div>
         </div>
-        <div class="header-meta">
-            <div id="clock" style="font-size:1rem;color:var(--text);"></div>
-            <div id="date-display"></div>
+        <div class="kpi-card kpi-pression">
+            <div class="label">Pression</div>
+            <div class="value" id="kpi-pression">—</div>
+            <div class="minmax" id="kpi-pression-mm"></div>
         </div>
-    </header>
-
-    <!-- KPI CARDS -->
-    <div class="kpi-grid">
-        <div class="kpi-card temp">
-            <div class="kpi-label">Température</div>
-            <div class="kpi-value" id="kpi-temp">—<span class="kpi-unit">°C</span></div>
-            <div class="kpi-sub">
-                <span>↓ min <b id="kpi-temp-min" style="color:var(--text)">—</b></span>
-                <span>↑ max <b id="kpi-temp-max" style="color:var(--text)">—</b></span>
-            </div>
-            <div class="kpi-icon">🌡️</div>
-        </div>
-        <div class="kpi-card pression">
-            <div class="kpi-label">Pression</div>
-            <div class="kpi-value" id="kpi-pression">—<span class="kpi-unit">hPa</span></div>
-            <div class="kpi-sub">
-                <span>↓ min <b id="kpi-pression-min" style="color:var(--text)">—</b></span>
-                <span>↑ max <b id="kpi-pression-max" style="color:var(--text)">—</b></span>
-            </div>
-            <div class="kpi-icon">🔵</div>
-        </div>
-        <div class="kpi-card altitude">
-            <div class="kpi-label">Altitude</div>
-            <div class="kpi-value" id="kpi-altitude">—<span class="kpi-unit">m</span></div>
-            <div class="kpi-sub">
-                <span>↓ min <b id="kpi-altitude-min" style="color:var(--text)">—</b></span>
-                <span>↑ max <b id="kpi-altitude-max" style="color:var(--text)">—</b></span>
-            </div>
-            <div class="kpi-icon">📡</div>
+        <div class="kpi-card kpi-altitude">
+            <div class="label">Altitude</div>
+            <div class="value" id="kpi-altitude">—</div>
+            <div class="minmax" id="kpi-altitude-mm"></div>
         </div>
     </div>
 
-    <!-- CHARTS -->
-    <div class="charts-grid">
-        <div class="chart-card">
-            <div class="chart-header">
-                <div class="chart-title">
-                    <div class="dot" style="background:var(--temp);box-shadow:0 0 6px var(--temp);"></div>
-                    Température
-                </div>
-                <span class="chart-badge">°C</span>
-            </div>
+    <!-- Graphiques -->
+    <div class="graphiques-row">
+        <div class="Graphiques">
             <canvas id="GraphiqueTempérature"></canvas>
         </div>
-
-        <div class="chart-card">
-            <div class="chart-header">
-                <div class="chart-title">
-                    <div class="dot" style="background:var(--pression);box-shadow:0 0 6px var(--pression);"></div>
-                    Pression
-                </div>
-                <span class="chart-badge">hPa</span>
-            </div>
+        <div class="Graphiques">
             <canvas id="GraphiquePression"></canvas>
         </div>
-
-        <div class="chart-card wide">
-            <div class="chart-header">
-                <div class="chart-title">
-                    <div class="dot" style="background:var(--altitude);box-shadow:0 0 6px var(--altitude);"></div>
-                    Altitude
-                </div>
-                <span class="chart-badge">mètres</span>
-            </div>
+        <div class="Graphiques">
             <canvas id="GraphiqueAltitude"></canvas>
         </div>
     </div>
 
     <script>
-        // CLOCK
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent =
-                now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('date-display').textContent =
-                now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        // DATA
         const mesures = JSON.parse('{{ mesures_json|safe }}');
-        const labels        = mesures.map(m => m.timestamp);
-        const tempData      = mesures.map(m => m.temperature);
-        const pressionData  = mesures.map(m => m.pression);
-        const altitudeData  = mesures.map(m => m.altitude);
 
-        // KPIs — dernière valeur + min/max
-        function setKPI(baseId, data, decimals) {
+        // DONNÉES
+        const labels = mesures.map(m => m.timestamp);
+        const tempData = mesures.map(m => m.temperature);
+        const pressionData = mesures.map(m => m.pression);
+        const altitudeData = mesures.map(m => m.altitude);
+
+        // KPI — dernière valeur + min/max
+        function fillKPI(valueId, mmId, data, unit, decimals = 1) {
             if (!data.length) return;
             const last = data[data.length - 1];
-            const min  = Math.min(...data);
-            const max  = Math.max(...data);
-            const card = document.getElementById(baseId);
-            card.childNodes[0].textContent = last.toFixed(decimals);
-            document.getElementById(baseId + '-min').textContent = min.toFixed(decimals);
-            document.getElementById(baseId + '-max').textContent = max.toFixed(decimals);
+            const min  = Math.min(...data).toFixed(decimals);
+            const max  = Math.max(...data).toFixed(decimals);
+            document.getElementById(valueId).textContent = last.toFixed(decimals) + ' ' + unit;
+            document.getElementById(mmId).textContent    = `↓ ${min}  ↑ ${max}`;
         }
-        setKPI('kpi-temp',      tempData,     1);
-        setKPI('kpi-pression',  pressionData, 1);
-        setKPI('kpi-altitude',  altitudeData, 0);
 
-        // SCALE
+        fillKPI('kpi-temp',     'kpi-temp-mm',     tempData,     '°C');
+        fillKPI('kpi-pression', 'kpi-pression-mm', pressionData, 'hPa');
+        fillKPI('kpi-altitude', 'kpi-altitude-mm', altitudeData, 'm', 0);
+
+        // FONCTION ÉCHELLE DYNAMIQUE
         function getScale(data) {
-            if (!data.length) return { min: 0, max: 10 };
-            const min = Math.min(...data), max = Math.max(...data);
-            const range = max - min || 1;
-            return { min: min - range * 0.12, max: max + range * 0.12 };
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min;
+            if (range === 0) return { min: min - 1, max: max + 1 };
+            const padding = range * 0.1;
+            return { min: min - padding, max: max + padding };
         }
 
-        // CHART DEFAULTS
-        Chart.defaults.color = '#4a5a70';
-        Chart.defaults.font.family = "'Space Mono', monospace";
-        Chart.defaults.font.size = 10;
+        // TEMPÉRATURE
+        new Chart(document.getElementById('GraphiqueTempérature'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Température (°C)',
+                    data: tempData,
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255,0,0,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: getScale(tempData) }
+            }
+        });
 
-        function makeChart(id, data, color, unit) {
-            const scale = getScale(data);
-            return new Chart(document.getElementById(id), {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        data,
-                        borderColor: color,
-                        backgroundColor: (ctx) => {
-                            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
-                            gradient.addColorStop(0, color.replace(')', ', 0.2)').replace('rgb', 'rgba'));
-                            gradient.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));
-                            return gradient;
-                        },
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: data.length > 60 ? 0 : 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: color,
-                        pointBorderColor: '#111418',
-                        pointBorderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1a2030',
-                            borderColor: '#2e3d52',
-                            borderWidth: 1,
-                            titleColor: '#c8d6e8',
-                            bodyColor: color,
-                            padding: 10,
-                            callbacks: {
-                                label: ctx => ` ${ctx.parsed.y.toFixed(1)} ${unit}`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { color: '#1a2028', drawTicks: false },
-                            border: { display: false },
-                            ticks: { maxTicksLimit: 6, maxRotation: 0 }
-                        },
-                        y: {
-                            min: scale.min,
-                            max: scale.max,
-                            grid: { color: '#1a2028', drawTicks: false },
-                            border: { display: false },
-                            ticks: { maxTicksLimit: 4 }
-                        }
-                    }
-                }
-            });
-        }
+        // PRESSION
+        new Chart(document.getElementById('GraphiquePression'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Pression (hPa)',
+                    data: pressionData,
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0,0,255,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: getScale(pressionData) }
+            }
+        });
 
-        makeChart('GraphiqueTempérature', tempData,     '#ff5e3a', '°C');
-        makeChart('GraphiquePression',    pressionData, '#3ab8ff', 'hPa');
-        makeChart('GraphiqueAltitude',    altitudeData, '#2aff9b', 'm');
+        // ALTITUDE
+        new Chart(document.getElementById('GraphiqueAltitude'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Altitude (m)',
+                    data: altitudeData,
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0,255,0,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: getScale(altitudeData) }
+            }
+        });
     </script>
-
 </body>
 </html>
